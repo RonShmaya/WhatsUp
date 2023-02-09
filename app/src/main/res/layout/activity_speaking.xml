@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/chat_back"
+    tools:context=".activities.SpeakingActivity">
+
+
+    <LinearLayout
+        android:id="@+id/AppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:gravity="start"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/speaking_IMG_backPressed"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:clickable="true"
+            android:src="@drawable/ic_back" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/speaking_IMG_user"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:src="@drawable/ic_user" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="5dp"
+            android:gravity="center_vertical"
+            android:layout_weight="8"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/speaking_LBL_title"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_gravity="start|bottom"
+                android:fontFamily="@font/helvetica_bold"
+                android:gravity="start|bottom"
+                android:text="Ron Shmaya"
+                android:textAlignment="viewStart"
+                android:textColor="#ffffff"
+                android:textSize="15dp" />
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/speaking_LBL_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="start|top"
+                    android:fontFamily="@font/helvetica"
+                    android:text="Hi how are you?"
+                    android:textAlignment="viewStart"
+                    android:textColor="#ffffff"
+                    android:textSize="13dp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/send"
+        android:layout_below="@+id/AppBarLayout"
+        android:gravity="center_horizontal"
+
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/speaking_LST"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="14"
+            android:background="@drawable/rounded"
+            android:backgroundTint="@color/white"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/speaking_IMG_smiley"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp"
+                android:clickable="true"
+                android:src="@drawable/ic_smile" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/speaking_TIETL_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/rounded"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/helvetica"
+                android:gravity="center_vertical"
+                android:hint="@string/MSG_TAG"
+                android:imeOptions="actionDone"
+                android:maxHeight="100dp"
+                android:padding="10dp"
+                android:text=""
+                android:textColor="#5B5252" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/rounded"
+            android:backgroundTint="#12A188"
+            android:clickable="true">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/speaking_IMG_send"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:clickable="true"
+                android:src="@drawable/ic_send" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+

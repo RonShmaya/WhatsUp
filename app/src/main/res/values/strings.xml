@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">WhatsUp</string>
+    <string name="name_tag">Name</string>
+    <string name="name_decs_tag">This is the name people will see, in case they don\'t have you in their contact</string>
+    <string name="phone_tag">Phone</string>
+    <string name="setting_tag">Settings</string>
+    <string name="chat_tag">Chats</string>
+    <string name="LANG_TAG">Language</string>
+    <string name="Logout_TAG">Logout</string>
+    <string name="typing_TAG">Typing...</string>
+    <string name="MSG_TAG">message</string>
+    <string name="searching_TAG">Shearching...</string>
+</resources>

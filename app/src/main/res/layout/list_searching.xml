@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="#FAF9F9"
+    android:elevation="0dp"
+    android:clickable="true"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/listSearching_IMG_photo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:src="@drawable/ic_user" />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/listSearching_LBL_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical|start"
+                android:gravity="start"
+                android:textAlignment="viewStart"
+                android:fontFamily="@font/helvetica_bold"
+                android:padding="5dp"
+                android:text="Ron Shmaya"
+                android:textColor="#5B5252"
+                android:textSize="15dp" />
+
+
+        </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "197705486586",
+    "project_id": "keepie-cb5ec",
+    "storage_bucket": "keepie-cb5ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197705486586:android:cdaf268a3e273b59c4f943",
+        "android_client_info": {
+          "package_name": "com.ron.keepie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197705486586-gectrd0iqav5k6g34843ko2pf54a8rbf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnd15hfyly5PW9dj8IUIYrm-Qceom3e_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197705486586-gectrd0iqav5k6g34843ko2pf54a8rbf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197705486586:android:1b6fedeff5bf5a44c4f943",
+        "android_client_info": {
+          "package_name": "com.ron.whatsUp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197705486586-v9t6ou97sa78bf3f9fge8u70s06020if.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ron.whatsUp",
+            "certificate_hash": "9bb9e68115479f24b9504944c1bd5675b17286d0"
+          }
+        },
+        {
+          "client_id": "197705486586-gectrd0iqav5k6g34843ko2pf54a8rbf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnd15hfyly5PW9dj8IUIYrm-Qceom3e_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197705486586-gectrd0iqav5k6g34843ko2pf54a8rbf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

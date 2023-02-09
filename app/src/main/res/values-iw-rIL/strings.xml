@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WhatsUp</string>
+    <string name="name_tag">שם</string>
+    <string name="name_decs_tag">זה השם אשר יוצג למשתמשים שאינך נמצא באנשי הקשר שלהם</string>
+    <string name="phone_tag">טלפון</string>
+    <string name="setting_tag">הגדרות</string>
+    <string name="chat_tag">צ\'אטים</string>
+    <string name="LANG_TAG">שפות</string>
+    <string name="Logout_TAG">התנתק</string>
+    <string name="typing_TAG">מקליד\\ה...</string>
+    <string name="MSG_TAG">הודעה</string>
+    <string name="searching_TAG">חיפוש...</string>
+</resources>
