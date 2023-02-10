@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import java.util.Locale;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textview.MaterialTextView;
@@ -22,6 +24,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public interface ChatListener {
         void clicked(Chat chat, int position);
     }
+
     //TODO save userchat
     private Activity activity;
     private ChatListener chatListener;
@@ -50,32 +53,35 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         final ChatsHolder holder = (ChatsHolder) viewHolder;
         Chat chat = getItem(position);
 
-        holder.listChats_LBL_user_name.setText(chat.getOther_user().getName());
-        int res;
-        if(chat.is_last_msg_read() && chat.getCurrent_user().getPhone().equals(chat.getLast_msg().getSender())){
-            res = DataManager.READ_BLUE;
+        if (chat.getOther_user().getContact_name().isEmpty()) {
+            holder.listChats_LBL_user_name.setText(chat.getOther_user().getName());
+
         }
         else{
+            holder.listChats_LBL_user_name.setText(chat.getOther_user().getContact_name());
+        }
+        int res;
+        if (chat.is_last_msg_read() && chat.getCurrent_user().getPhone().equals(chat.getLast_msg().getSender())) {
+            res = DataManager.READ_BLUE;
+        } else {
             res = DataManager.READ_REG;
         }
         holder.listChats_IC_vi1.setImageResource(res);
         holder.listChats_IC_vi2.setImageResource(res);
 
-        if(chat.is_typing()){
+        if (chat.is_typing()) {
             holder.listChats_LBL_last_msg.setText(R.string.typing_TAG);
-        }
-        else{
+        } else {
             holder.listChats_LBL_last_msg.setText(chat.get_last_msg());
         }
 
         holder.listChats_LBL_calender.setText(chat.get_last_msg_calender_output());
         int unread = chat.unread_messages();
-        if(unread == 0){
+        if (unread == 0) {
             holder.listChats_LBL_not_read.setVisibility(View.INVISIBLE);
-        }
-        else{
+        } else {
             holder.listChats_LBL_not_read.setVisibility(View.VISIBLE);
-            holder.listChats_LBL_not_read.setText(""+unread);
+            holder.listChats_LBL_not_read.setText("" + unread);
         }
         //listChats_IMG_photo
 //        Glide.with(activity).load(bar.getBar_photo()).placeholder(R.drawable.img_placeholder).into(holder.listChats_IMG_photo);

@@ -76,7 +76,6 @@ public class SettingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
-            finish();
         });
     }
 
@@ -116,6 +115,12 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(DataManager.getDataManager().isIs_changed_lang()){
+            DataManager.getDataManager().killAppCompatActivity();
+            DataManager.getDataManager().set_lang_changed(false);
+            go_next(ChatsActivity.class);
+            return;
+        }
         finish();
     }
 
@@ -123,6 +128,7 @@ public class SettingActivity extends AppCompatActivity {
         @Override
         public void account_updated(MyUser account) {
             MyServices.getInstance().update_app_lang(account.getLang(), SettingActivity.this);
+            DataManager.getDataManager().set_lang_changed(true);
             go_next(SettingActivity.class);
         }
 

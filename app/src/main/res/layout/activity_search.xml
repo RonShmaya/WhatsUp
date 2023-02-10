@@ -7,10 +7,26 @@
     android:layout_height="match_parent"
     tools:context=".activities.SearchActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/searching_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:titleTextColor="@color/white"
+            />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <LinearLayout
         android:id="@+id/AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar"
         android:background="#ffffff"
         android:padding="10dp"
         android:gravity="start"
@@ -23,8 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/helvetica"
+            android:textAlignment="viewStart"
             app:iconifiedByDefault="false"
-            android:gravity="center_vertical"
             app:queryHint="@string/searching_TAG"
             android:maxHeight="100dp"
             android:padding="10dp"

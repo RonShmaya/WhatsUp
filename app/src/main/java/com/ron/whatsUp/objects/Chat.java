@@ -9,6 +9,7 @@ import java.util.Locale;
 public class Chat extends ChatDB {
     private UserChat current_user = new UserChat();
     private UserChat other_user = new UserChat();
+    private boolean is_new;
 
 
     public Chat() {
@@ -50,6 +51,15 @@ public class Chat extends ChatDB {
         }
     }
 
+    public boolean isIs_new() {
+        return is_new;
+    }
+
+    public Chat setIs_new(boolean is_new) {
+        this.is_new = is_new;
+        return this;
+    }
+
     public boolean is_connected() {
         return other_user.isConnected();
     }
@@ -85,7 +95,7 @@ public class Chat extends ChatDB {
         if (diff == 1) {
             return "Yesterday";
         }
-        return new SimpleDateFormat("HH:mm", Locale.ROOT).format(msg_cal);
+        return new SimpleDateFormat("HH:mm", Locale.ROOT).format(msg_cal.getTimeInMillis());
     }
 
     public static String make_chat_id(String phone1, String phone2) {

@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.ron.whatsUp.R;
 
 import com.ron.whatsUp.adapters.SearchingAdapter;
@@ -20,25 +21,30 @@ import com.ron.whatsUp.callbacks.Callback_find_account;
 
 import com.ron.whatsUp.objects.Chat;
 import com.ron.whatsUp.objects.ChatDB;
+import com.ron.whatsUp.objects.MyContact;
 import com.ron.whatsUp.objects.MyUser;
+import com.ron.whatsUp.objects.UserChat;
 import com.ron.whatsUp.tools.DataManager;
 import com.ron.whatsUp.tools.MyDB;
 
 
-
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class SearchActivity extends AppCompatActivity {
+    // TODO: 10/02/2023 get chats details from activity chats !!!
     private final int PHONE_LEN = 13;
-    private ArrayList<String> phones = new ArrayList<>();
-    private ArrayList<MyUser> myUsers = new ArrayList<>();
+    private HashMap<String, String> my_contacts = new HashMap<>();
     private MyUser myUser;
-    private ArrayList<MyUser> find_lst = new ArrayList<>();
+    private ArrayList<MyContact> find_lst = new ArrayList<>();
+    private ArrayList<MyContact> all_contacts = new ArrayList<>();
+    private MyContact current_contact;
+    private HashMap<String, Chat> my_chats = new HashMap<String, Chat>();
     private SearchView speaking_SV;
     private RecyclerView search_LST;
     private SearchingAdapter searchingAdapter;
-    private int num_of_get_api = 0;
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,66 +52,111 @@ public class SearchActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_search);
         myUser = DataManager.getDataManager().get_account();
-        ArrayList<MyUser> tmp = DataManager.getDataManager().get_my_users();
-        if(tmp == null){
-            MyDB.getInstance().setCallback_find_user(callback_find_account);
+        HashMap<String, String> tmp = DataManager.getDataManager().get_my_users();
+        MyDB.getInstance().setCallback_find_user(callback_find_account);
+        if (tmp == null) {
             get_all_contacts();
+        } else {
+            my_contacts = tmp;
+            my_contacts.forEach(
+                    (ph, name) -> {
+                        all_contacts.add(new MyContact().setName(name).setPhone(ph));
+                    }
+            );
+            my_chats = DataManager.getDataManager().getMy_chats_map();
+            for (int i = 0; i < all_contacts.size(); i++) {
+                String id = Chat.make_chat_id(myUser.getPhone(), all_contacts.get(i).getPhone());
+                if (my_chats.get(id) != null)
+                    all_contacts.get(i).setPhoto(my_chats.get(id).getOther_user().getPhone());
+
+            }
         }
-        else{
-            myUsers = tmp;
-        }
+        init_tool_bar();
         findViews();
+
         searchingAdapter = new SearchingAdapter(SearchActivity.this, find_lst);
         searchingAdapter.setChatListener(userListener);
         search_LST.setAdapter(searchingAdapter);
+
         init_actions();
+
     }
 
     private void findViews() {
-        search_LST =  findViewById(R.id.search_LST);
-        speaking_SV =  findViewById(R.id.speaking_SV);
+        search_LST = findViewById(R.id.search_LST);
+        speaking_SV = findViewById(R.id.speaking_SV);
     }
 
+    private void init_tool_bar() {
+        toolbar = findViewById(R.id.searching_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(v -> {
+                onBackPressed();
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     private void get_all_contacts() {
-        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
-        while (phones.moveToNext())
-        {
+        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        while (phones.moveToNext()) {
             String phone = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            //String name = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            if(phone.contains("+972")){
+            String name = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            if (phone.contains("+972")) {
                 phone = phone.replaceAll("[^\\d]", "");
-                phone = "+"+phone;
-                if(phone.length() == PHONE_LEN)
-                    this.phones.add(phone);
+                phone = "+" + phone;
+                if (phone.length() == PHONE_LEN)
+                    this.my_contacts.put(phone, name);
+            } else if (phone.startsWith("05")) {
+                phone = phone.replaceAll("[^\\d]", "");
+                phone = phone.replaceFirst("0", "+972");
+                if (phone.length() == PHONE_LEN)
+                    this.my_contacts.put(phone, name);
             }
 
         }
         phones.close();
-        num_of_get_api = this.phones.size();
-        this.phones.forEach(
-                ph -> {
-                    MyDB.getInstance().isAccountExists(ph);
+        DataManager.getDataManager().setMy_contacts(my_contacts);
+        my_chats = DataManager.getDataManager().getMy_chats_map();
+        my_contacts.forEach(
+                (ph, name) -> {
+                    all_contacts.add(new MyContact().setName(name).setPhone(ph));
                 }
         );
+        my_chats = DataManager.getDataManager().getMy_chats_map();
+        for (int i = 0; i < all_contacts.size(); i++) {
+            String id = Chat.make_chat_id(myUser.getPhone(), all_contacts.get(i).getPhone());
+            if (my_chats.get(id) != null)
+                all_contacts.get(i).setPhoto(my_chats.get(id).getOther_user().getPhone());
+
+        }
 
     }
+
     private Callback_find_account callback_find_account = new Callback_find_account() {
         @Override
-        public synchronized void account_found(MyUser account) {
-            myUsers.add(account);
-            if(myUsers.size() == num_of_get_api){
-                ArrayList<MyUser> tmp_users = new ArrayList<>();
-                myUsers.forEach(
-                        user -> {
-                            if(user != null)
-                                tmp_users.add(user);
-
-                        }
-                );
-                myUsers = tmp_users;
-                DataManager.getDataManager().setMy_users(myUsers);
+        public void account_found(MyUser account) {
+            if (account == null) {
+                Toast.makeText(SearchActivity.this, "This contact didn't have an account ", Toast.LENGTH_SHORT).show();
+                return;
             }
+            ChatDB chatDB = new ChatDB()
+                    .setChat_id(Chat.make_chat_id(account.getPhone(),myUser.getPhone()))
+                                            .setUser1(myUser.getUserChat())
+                                            .setUser2(new UserChat()
+                                                            .setContact_name(current_contact.getName()) //TODO add photo? he have?
+                                                            .setPhone(current_contact.getPhone()));
+            Chat chat = new Chat(chatDB,myUser.getPhone()).setIs_new(true);
+            DataManager.getDataManager().setCurrent_chat(chat);
+            account.getUserChat().setContact_name(current_contact.getName());
+            DataManager.getDataManager().setOtherUserAccount(account);
+            go_next(SpeakingActivity.class);
         }
 
         @Override
@@ -117,21 +168,19 @@ public class SearchActivity extends AppCompatActivity {
             Toast.makeText(SearchActivity.this, "Some error occurred, Please check your internet", Toast.LENGTH_SHORT).show();
         }
     };
-    private SearchingAdapter.UserListener userListener =  new SearchingAdapter.UserListener() {
+    private SearchingAdapter.UserListener userListener = new SearchingAdapter.UserListener() {
         @Override
-        public void clicked(MyUser myUser, int position) {
-            String id = Chat.make_chat_id(myUser.getPhone(),SearchActivity.this.myUser.getPhone());
-           ChatDB chatDB =  myUser.getChats().get(id);
-           if(chatDB == null){
-               DataManager.getDataManager().setCurrent_chat(new Chat());
-               DataManager.getDataManager().setOtherUser(myUser);
-               go_next(SpeakingActivity.class);
-           }
-           else{
-               DataManager.getDataManager().setCurrent_chat(new Chat(chatDB, myUser.getPhone()));
-               go_next(SpeakingActivity.class);
-           }
-
+        public void clicked(MyContact contact, int position) {
+            my_chats = DataManager.getDataManager().getMy_chats_map();
+            String id = Chat.make_chat_id(contact.getPhone(), SearchActivity.this.myUser.getPhone());
+            ChatDB chatDB = my_chats.get(id);
+            if (chatDB == null) {
+                current_contact = contact;
+                MyDB.getInstance().isAccountExists(contact.getPhone());
+            } else {
+                DataManager.getDataManager().setCurrent_chat(new Chat(chatDB, myUser.getPhone()));
+                go_next(SpeakingActivity.class);
+            }
         }
     };
 
@@ -139,7 +188,8 @@ public class SearchActivity extends AppCompatActivity {
         speaking_SV.setOnQueryTextListener(onQueryTextListener);
 
     }
-    private SearchView.OnQueryTextListener onQueryTextListener =  new SearchView.OnQueryTextListener() {
+
+    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String s) {
             return true;
@@ -152,22 +202,21 @@ public class SearchActivity extends AppCompatActivity {
                 searchingAdapter.notifyDataSetChanged();
                 return true;
             }
-            myUsers.forEach(user -> {
 
-                if (user.getPhone().contains(s)) {
-                    find_lst.add(user);
-                } else {
-                    find_lst.remove(user);
+            for (int i = 0; i < all_contacts.size(); i++) {     //TODO: not all add a limit
+                if (all_contacts.get(i).getName().contains(s)) {
+                    find_lst.add(all_contacts.get(i));
                 }
-
-            });
+            }
             searchingAdapter.notifyDataSetChanged();
             return true;
         }
     };
+
     private <T extends AppCompatActivity> void go_next(Class<T> nextActivity) {
         Intent intent = new Intent(this, nextActivity);
         startActivity(intent);
         finish();
     }
+
 }

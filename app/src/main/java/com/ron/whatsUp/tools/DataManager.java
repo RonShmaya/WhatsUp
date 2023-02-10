@@ -1,6 +1,8 @@
 package com.ron.whatsUp.tools;
 
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.ron.whatsUp.R;
 import com.ron.whatsUp.callbacks.Callback_message;
 import com.ron.whatsUp.objects.Chat;
@@ -17,11 +19,14 @@ public class DataManager {
     public static final int READ_REG = R.drawable.ic_readed;
     public static final int READ_BLUE = R.drawable.ic_readed_blue;
     private MyUser my_current_user = null;
-    private ArrayList<MyUser> my_users = null;
+    private HashMap<String,String> my_contacts = null;
     private Chat current_chat;
+    private AppCompatActivity appCompatActivity;
     private static DataManager _instance = new DataManager();
     private MyUser other_user;
     private Callback_message callback_message;
+    private HashMap<String, Chat> my_chats_map;
+    private boolean is_changed_lang;
 
     public DataManager setCallback_message(Callback_message callback_message) {
         this.callback_message = callback_message;
@@ -61,20 +66,48 @@ public class DataManager {
         return this;
     }
 
-    public ArrayList<MyUser> get_my_users() {
-        return my_users;
+    public HashMap<String,String> get_my_users() {
+        return my_contacts;
     }
 
-    public DataManager setMy_users(ArrayList<MyUser> my_users) {
-        this.my_users = my_users;
+    public DataManager setMy_contacts(HashMap<String,String> my_contacts) {
+        this.my_contacts = my_contacts;
         return this;
     }
 
-    public void setOtherUser(MyUser otherUser) {
+    public void setOtherUserAccount(MyUser otherUser) {
         this.other_user = otherUser;
     }
 
     public MyUser getOther_user() {
         return other_user;
+    }
+
+    public void set_all_chats(HashMap<String, Chat> my_chats_map) {
+        this.my_chats_map = my_chats_map;
+    }
+
+    public HashMap<String, Chat> getMy_chats_map() {
+        return my_chats_map;
+    }
+
+    public void set_lang_changed(boolean lang_changed) {
+        this.is_changed_lang = lang_changed;
+    }
+
+    public boolean isIs_changed_lang() {
+        return is_changed_lang;
+    }
+
+    public AppCompatActivity getAppCompatActivity() {
+        return appCompatActivity;
+    }
+
+    public DataManager setAppCompatActivity(AppCompatActivity appCompatActivity) {
+        this.appCompatActivity = appCompatActivity;
+        return this;
+    }
+    public void killAppCompatActivity() {
+        this.appCompatActivity.finish();
     }
 }

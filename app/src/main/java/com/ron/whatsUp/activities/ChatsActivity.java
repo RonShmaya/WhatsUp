@@ -37,14 +37,20 @@ public class ChatsActivity extends AppCompatActivity {
     private HashMap<String, Chat> chats = new HashMap<>();
     private ArrayList<Chat> my_chats_list = new ArrayList<>();
 
+    // TODO: 10/02/2023 no need to save contact name to DB make it in the ChatsAdapter
+    // TODO: 10/02/2023 get contacts in chats activity... he will need it?
+    // TODO: 10/02/2023 update this view to the other man if he connected  the chat (we are not )
+    // TODO: 10/02/2023 contact name didn't save to DB
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         myUser = DataManager.getDataManager().get_account();
         MyServices.getInstance().update_app_lang(myUser.getLang(), this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats);
+        DataManager.getDataManager().setAppCompatActivity(this);
         init_tool_bar();
         findViews();
+        DataManager.getDataManager().setCallback_message(callback_save_message);
         Permissions.initHelper(this);
         if (!Permissions.getPermissions().all_permissions_ok()) {
             Permissions.getPermissions().setCallback_permissions(callback_permissions);
@@ -54,8 +60,6 @@ public class ChatsActivity extends AppCompatActivity {
 
         MyDB.getInstance().setCallBack_get_all_chats(callBack_get_all_chats);
         MyDB.getInstance().getAllChats(myUser);
-
-
     }
 
     private void findViews() {
@@ -78,6 +82,7 @@ public class ChatsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_search) {
+            DataManager.getDataManager().set_all_chats(chats);
             go_next(SearchActivity.class);
         } else if (id == R.id.action_setting) {
             go_next(SettingActivity.class);
@@ -109,6 +114,7 @@ public class ChatsActivity extends AppCompatActivity {
 
             my_chats_list.remove(chat);
             my_chats_list.add(chat);
+            DataManager.getDataManager().set_all_chats(chats);
 
             runOnUiThread(() -> chatsAdapter.notifyDataSetChanged());
 
@@ -132,10 +138,11 @@ public class ChatsActivity extends AppCompatActivity {
                         chats.put(id, new Chat(chatDB, myUser.getPhone()));
                     }
             );
-            my_chats_list = new ArrayList<>(chats.values());
-            chatsAdapter = new ChatsAdapter(ChatsActivity.this, new ArrayList<>(my_chats_list));
+            my_chats_list.addAll(chats.values());
+            chatsAdapter = new ChatsAdapter(ChatsActivity.this, my_chats_list);
             chatsAdapter.setChatListener(chatListener);
             chats_LST.setAdapter(chatsAdapter);
+            DataManager.getDataManager().set_all_chats(chats);
         }
 
         @Override
@@ -174,8 +181,22 @@ public class ChatsActivity extends AppCompatActivity {
                 chats.put(chat_new.getChat_id(), (Chat) chat_new);
                 my_chats_list.add((Chat) chat_new);
             }
-
-            chatsAdapter.notifyDataSetChanged();
+            else{
+                chats.put(chat_new.getChat_id(), (Chat) chat_new);
+                my_chats_list.remove((Chat) chat_new);
+                my_chats_list.add((Chat) chat_new);
+            }
+            myUser.getChats().put(chat_new.getChat_id(),chat_new);
+            DataManager.getDataManager().set_all_chats(chats);
+            runOnUiThread(() -> chatsAdapter.notifyDataSetChanged());
         }
     };
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!my_chats_list.isEmpty())
+            runOnUiThread(() -> chatsAdapter.notifyDataSetChanged());
+
+
+    }
 }

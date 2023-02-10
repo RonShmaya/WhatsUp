@@ -6,8 +6,9 @@ import com.firebase.ui.auth.data.model.User;
 
 public class UserChat {
     // TODO: 09/02/2023 photo
-    private String phone;
-    private String name;
+    private String phone="";
+    private String name="";
+    private String contact_name="";
     private MyTime last_seen = new MyTime();
     private boolean typing;
     private boolean connected;
@@ -76,5 +77,14 @@ public class UserChat {
             return false;
         UserChat other = (UserChat) obj;
         return this.phone.equals(other.phone);
+    }
+
+    public String getContact_name() {
+        return contact_name;
+    }
+
+    public UserChat setContact_name(String contact_name) {
+        this.contact_name = contact_name;
+        return this;
     }
 }

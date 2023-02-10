@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,15 +76,19 @@ public class EnterAppActivity extends AppCompatActivity {
     private Callback_find_account callback_find_account = new Callback_find_account() {
         @Override
         public void account_found(MyUser account) {
-            DataManager.getDataManager().set_account(account);
-            go_next(ChatsActivity.class);
+            if (account != null) {
+                DataManager.getDataManager().set_account(account);
+                go_next(ChatsActivity.class);
+                return;
+            }
+            FirebaseAuth.getInstance().signOut();
+            go_next(LoginActivity.class);
         }
 
 
         @Override
         public void account_not_found() {
-            FirebaseAuth.getInstance().signOut();
-            go_next(LoginActivity.class);
+
         }
 
         @Override

@@ -80,6 +80,6 @@ public class Message {
         return myTime.parse_my_time_to_calender();
     }
     public String get_hour_minutes_str(){
-         return new SimpleDateFormat("HH:mm", Locale.ROOT).format(get_msg_calender());
+         return new SimpleDateFormat("HH:mm", Locale.ROOT).format(get_msg_calender().getTimeInMillis());
     }
 }
