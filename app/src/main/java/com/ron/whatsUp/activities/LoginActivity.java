@@ -18,9 +18,11 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.ron.whatsUp.R;
 import com.ron.whatsUp.callbacks.Callback_creating_account;
+import com.ron.whatsUp.callbacks.Callback_find_account;
 import com.ron.whatsUp.objects.MyTime;
 import com.ron.whatsUp.objects.MyUser;
 import com.ron.whatsUp.objects.UserChat;
+import com.ron.whatsUp.objects.UserStatus;
 import com.ron.whatsUp.tools.DataManager;
 import com.ron.whatsUp.tools.MyDB;
 
@@ -34,12 +36,15 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout login_TIL_lan;
     private AutoCompleteTextView login_ACTV_lan;
 
+    // TODO: 15/02/2023 manifest page orizontal
+    // TODO: 15/02/2023 verify if it exists DB number!
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         MyDB.getInstance().setCallback_account_creating(callback_creating_account);
+        MyDB.getInstance().setCallback_find_user(callback_find_account);
         findViews();
         init_autoCompleteTextView();
         init_actions();
@@ -83,6 +88,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private <T extends AppCompatActivity> void go_next(Class<T> nextActivity) {
+        MyDB.getInstance().setCallback_account_creating(null);
+        MyDB.getInstance().setCallback_find_user(null);
         Intent intent = new Intent(this, nextActivity);
         startActivity(intent);
         finish();
@@ -90,13 +97,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void connect_to_user() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            MyUser myUser = new MyUser()
-                    .setId(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .setLang(login_ACTV_lan.getText().toString())
-                    .setPhone(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
-                    .setUserChat(new UserChat().setConnected(true).setLast_seen(new MyTime().update_my_time_by_calender(Calendar.getInstance())).setName(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).setTyping(false).setPhone(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()))
-                    .setNick_name(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
-            MyDB.getInstance().create_account(myUser);
+            MyDB.getInstance().isAccountExists(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
         }
     }
 
@@ -110,6 +111,33 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void error() {
             Toast.makeText(LoginActivity.this, "some error occurred, please check your internet", Toast.LENGTH_LONG).show();
+        }
+    };
+    private Callback_find_account callback_find_account = new Callback_find_account() {
+        @Override
+        public void account_found(MyUser account) {
+            if (account != null) {
+                DataManager.getDataManager().set_account(account);
+                go_next(ChatsActivity.class);
+                return;
+            }
+            MyUser myUser = new MyUser()
+                    .setId(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .setLang(login_ACTV_lan.getText().toString())
+                    .setPhone(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
+                    .setUserChat(new UserChat().setName(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).setTyping(false).setPhone(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()))
+                    .setNick_name(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
+            MyDB.getInstance().create_account(myUser);
+        }
+
+
+        @Override
+        public void account_not_found() {
+        }
+
+        @Override
+        public void error() {
+            Toast.makeText(LoginActivity.this, "Error occurred, please check your internet", Toast.LENGTH_SHORT).show();
         }
     };
 }

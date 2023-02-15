@@ -113,15 +113,6 @@
 
             </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/profile_FAB_upload_name"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:background="@drawable/ic_edit"
-                android:backgroundTint="#ffffff"
-                app:borderWidth="0dp" />
-
 
         </LinearLayout>
 

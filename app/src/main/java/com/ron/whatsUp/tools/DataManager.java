@@ -4,6 +4,7 @@ package com.ron.whatsUp.tools;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ron.whatsUp.R;
+import com.ron.whatsUp.callbacks.Callback_chats_to_messages;
 import com.ron.whatsUp.callbacks.Callback_message;
 import com.ron.whatsUp.objects.Chat;
 import com.ron.whatsUp.objects.MyUser;
@@ -21,7 +22,8 @@ public class DataManager {
     private MyUser my_current_user = null;
     private HashMap<String,String> my_contacts = null;
     private Chat current_chat;
-    private AppCompatActivity appCompatActivity;
+    private AppCompatActivity main_activity;
+    private Callback_chats_to_messages callback_chats_to_messages;
     private static DataManager _instance = new DataManager();
     private MyUser other_user;
     private Callback_message callback_message;
@@ -38,7 +40,19 @@ public class DataManager {
         }
     }
 
+    public DataManager setCallback_chats_to_messages(Callback_chats_to_messages callback_chats_to_messages) {
+        this.callback_chats_to_messages = callback_chats_to_messages;
+        return this;
+    }
+
+    public Callback_chats_to_messages getCallback_chats_to_messages() {
+        return callback_chats_to_messages;
+    }
+
     private DataManager() {
+    }
+    private DataManager(HashMap<String,String> my_contacts) {
+        this.my_contacts = my_contacts;
     }
 
 
@@ -99,15 +113,22 @@ public class DataManager {
         return is_changed_lang;
     }
 
-    public AppCompatActivity getAppCompatActivity() {
-        return appCompatActivity;
+    public AppCompatActivity getMain_activity() {
+        return main_activity;
     }
 
-    public DataManager setAppCompatActivity(AppCompatActivity appCompatActivity) {
-        this.appCompatActivity = appCompatActivity;
+    public DataManager setMain_activity(AppCompatActivity main_activity) {
+        this.main_activity = main_activity;
         return this;
     }
     public void killAppCompatActivity() {
-        this.appCompatActivity.finish();
+        this.main_activity.finish();
+    }
+
+    public void reloaded() {
+        callback_message = null;
+        main_activity = null;
+        callback_chats_to_messages = null;
+        _instance = new DataManager(my_contacts);
     }
 }

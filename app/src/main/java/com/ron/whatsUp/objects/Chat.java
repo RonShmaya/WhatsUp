@@ -60,17 +60,12 @@ public class Chat extends ChatDB {
         return this;
     }
 
-    public boolean is_connected() {
-        return other_user.isConnected();
-    }
+
 
     public boolean is_typing() {
         return other_user.isTyping();
     }
 
-    public MyTime last_seen() {
-        return other_user.getLast_seen();
-    }
 
     public int unread_messages() {
         return current_user.getUnread();
@@ -90,14 +85,13 @@ public class Chat extends ChatDB {
         Calendar msg_cal = last_msg.get_msg_calender();
         int diff = msg_cal.fieldDifference(cal_now.getTime(), Calendar.DATE);
         if (diff > 1) {
-            return new SimpleDateFormat("HH:mm dd.MM.yy", Locale.ROOT).format(msg_cal);
+            return new SimpleDateFormat("dd.MM.yy", Locale.ROOT).format(msg_cal.getTimeInMillis());
         }
         if (diff == 1) {
             return "Yesterday";
         }
         return new SimpleDateFormat("HH:mm", Locale.ROOT).format(msg_cal.getTimeInMillis());
     }
-
     public static String make_chat_id(String phone1, String phone2) {
         int res = phone1.compareTo(phone2);
         if (res == 1)
@@ -105,7 +99,6 @@ public class Chat extends ChatDB {
         return phone2 + "-" + phone1;
 
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

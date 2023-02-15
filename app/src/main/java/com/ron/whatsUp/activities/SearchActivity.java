@@ -26,6 +26,7 @@ import com.ron.whatsUp.objects.MyUser;
 import com.ron.whatsUp.objects.UserChat;
 import com.ron.whatsUp.tools.DataManager;
 import com.ron.whatsUp.tools.MyDB;
+import com.ron.whatsUp.tools.MyServices;
 
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.HashMap;
 
 public class SearchActivity extends AppCompatActivity {
     // TODO: 10/02/2023 get chats details from activity chats !!!
-    private final int PHONE_LEN = 13;
     private HashMap<String, String> my_contacts = new HashMap<>();
     private MyUser myUser;
     private ArrayList<MyContact> find_lst = new ArrayList<>();
@@ -104,24 +104,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void get_all_contacts() {
-        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-        while (phones.moveToNext()) {
-            String phone = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            String name = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            if (phone.contains("+972")) {
-                phone = phone.replaceAll("[^\\d]", "");
-                phone = "+" + phone;
-                if (phone.length() == PHONE_LEN)
-                    this.my_contacts.put(phone, name);
-            } else if (phone.startsWith("05")) {
-                phone = phone.replaceAll("[^\\d]", "");
-                phone = phone.replaceFirst("0", "+972");
-                if (phone.length() == PHONE_LEN)
-                    this.my_contacts.put(phone, name);
-            }
-
-        }
-        phones.close();
+        my_contacts = MyServices.getInstance().get_all_contacts(this);
         DataManager.getDataManager().setMy_contacts(my_contacts);
         my_chats = DataManager.getDataManager().getMy_chats_map();
         my_contacts.forEach(
@@ -146,6 +129,14 @@ public class SearchActivity extends AppCompatActivity {
                 Toast.makeText(SearchActivity.this, "This contact didn't have an account ", Toast.LENGTH_SHORT).show();
                 return;
             }
+            String chat_id = Chat.make_chat_id(myUser.getPhone(),account.getPhone());
+            ChatDB chat_newDB = account.getChats().get(chat_id);
+            if (chat_newDB != null){
+                DataManager.getDataManager().setCurrent_chat(new Chat(chat_newDB,myUser.getPhone()));
+                go_next(SpeakingActivity.class);
+                return;
+            }
+
             ChatDB chatDB = new ChatDB()
                     .setChat_id(Chat.make_chat_id(account.getPhone(),myUser.getPhone()))
                                             .setUser1(myUser.getUserChat())

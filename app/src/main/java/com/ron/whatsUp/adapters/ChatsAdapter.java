@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.textview.MaterialTextView;
 import com.ron.whatsUp.R;
 import com.ron.whatsUp.objects.Chat;
@@ -23,17 +25,20 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface ChatListener {
         void clicked(Chat chat, int position);
+        void img_clicked(Chat chat, int position);
     }
 
     //TODO save userchat
     private Activity activity;
     private ChatListener chatListener;
+    private HashMap<String, String> my_contacts = new HashMap<>();
 
     private ArrayList<Chat> chats = new ArrayList<>();
 
-    public ChatsAdapter(Activity activity, ArrayList<Chat> chats) {
+    public ChatsAdapter(Activity activity, ArrayList<Chat> chats,HashMap<String, String> my_contacts) {
         this.activity = activity;
         this.chats = chats;
+        this.my_contacts = my_contacts;
     }
 
     public ChatsAdapter setChatListener(ChatListener chatListener) {
@@ -53,12 +58,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         final ChatsHolder holder = (ChatsHolder) viewHolder;
         Chat chat = getItem(position);
 
-        if (chat.getOther_user().getContact_name().isEmpty()) {
-            holder.listChats_LBL_user_name.setText(chat.getOther_user().getName());
-
+        String contact_name = my_contacts.get(chat.getOther_user().getPhone());
+        if (contact_name != null) {
+            holder.listChats_LBL_user_name.setText(contact_name);
         }
         else{
-            holder.listChats_LBL_user_name.setText(chat.getOther_user().getContact_name());
+            holder.listChats_LBL_user_name.setText(chat.getOther_user().getPhone());
         }
         int res;
         if (chat.is_last_msg_read() && chat.getCurrent_user().getPhone().equals(chat.getLast_msg().getSender())) {
@@ -83,8 +88,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.listChats_LBL_not_read.setVisibility(View.VISIBLE);
             holder.listChats_LBL_not_read.setText("" + unread);
         }
-        //listChats_IMG_photo
-//        Glide.with(activity).load(bar.getBar_photo()).placeholder(R.drawable.img_placeholder).into(holder.listChats_IMG_photo);
+
+        if(!chat.getOther_user().getImg().isEmpty()){
+            Glide.with(activity).load(chat.getOther_user().getImg()).placeholder(R.drawable.ic_user).into(holder.listChats_IMG_photo);
+        }
 
     }
 
@@ -121,6 +128,11 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             itemView.setOnClickListener(view -> {
                 if (chatListener != null) {
                     chatListener.clicked(getItem(getAdapterPosition()), getAdapterPosition());
+                }
+            });
+            listChats_IMG_photo.setOnClickListener(view -> {
+                if (chatListener != null) {
+                    chatListener.img_clicked(getItem(getAdapterPosition()), getAdapterPosition());
                 }
             });
         }

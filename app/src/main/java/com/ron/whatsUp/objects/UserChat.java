@@ -1,17 +1,18 @@
 package com.ron.whatsUp.objects;
 
+import android.icu.util.Calendar;
+
 import androidx.annotation.Nullable;
 
 import com.firebase.ui.auth.data.model.User;
 
 public class UserChat {
     // TODO: 09/02/2023 photo
-    private String phone="";
-    private String name="";
-    private String contact_name="";
-    private MyTime last_seen = new MyTime();
+    private String phone = "";
+    private String name = "";
+    private String img = "";
+    private String contact_name = "";
     private boolean typing;
-    private boolean connected;
     private int unread;
 
     public UserChat() {
@@ -26,14 +27,6 @@ public class UserChat {
         return this;
     }
 
-    public MyTime getLast_seen() {
-        return last_seen;
-    }
-
-    public UserChat setLast_seen(MyTime last_seen) {
-        this.last_seen = last_seen;
-        return this;
-    }
 
     public boolean isTyping() {
         return typing;
@@ -44,14 +37,6 @@ public class UserChat {
         return this;
     }
 
-    public boolean isConnected() {
-        return connected;
-    }
-
-    public UserChat setConnected(boolean connected) {
-        this.connected = connected;
-        return this;
-    }
 
     public String getName() {
         return name;
@@ -73,7 +58,7 @@ public class UserChat {
 
     @Override
     public boolean equals(@Nullable Object obj) {
-        if(!(obj instanceof UserChat))
+        if (!(obj instanceof UserChat))
             return false;
         UserChat other = (UserChat) obj;
         return this.phone.equals(other.phone);
@@ -85,6 +70,15 @@ public class UserChat {
 
     public UserChat setContact_name(String contact_name) {
         this.contact_name = contact_name;
+        return this;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public UserChat setImg(String img) {
+        this.img = img;
         return this;
     }
 }

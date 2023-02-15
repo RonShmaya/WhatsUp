@@ -19,7 +19,8 @@
         <activity
             android:name=".activities.SearchActivity"
             android:exported="false"
-            android:theme="@style/Theme.Chats">
+            android:theme="@style/Theme.Chats"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -27,7 +28,8 @@
         <activity
             android:name=".activities.SpeakingActivity"
             android:exported="false"
-            android:theme="@style/Theme.Chats">
+            android:theme="@style/Theme.Chats"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -35,7 +37,8 @@
         <activity
             android:name=".activities.ChatsActivity"
             android:exported="false"
-            android:theme="@style/Theme.Chats">
+            android:theme="@style/Theme.Chats"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -43,7 +46,8 @@
         <activity
             android:name=".activities.SettingActivity"
             android:exported="false"
-            android:theme="@style/Theme.Chats">
+            android:theme="@style/Theme.Chats"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -52,7 +56,8 @@
             android:name=".activities.LoginActivity"
             android:exported="false"
             android:supportsRtl="false"
-            android:theme="@style/Theme.MyApplicationNoBar">
+            android:theme="@style/Theme.MyApplicationNoBar"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -61,7 +66,8 @@
             android:name=".activities.EnterAppActivity"
             android:exported="true"
             android:supportsRtl="false"
-            android:theme="@style/Theme.MyApplicationNoBar">
+            android:theme="@style/Theme.MyApplicationNoBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

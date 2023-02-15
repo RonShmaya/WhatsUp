@@ -5,6 +5,7 @@ import android.icu.util.Calendar;
 public class MyTime implements Comparable<MyTime> {
     private int hour;
     private int minutes;
+    private int second;
     private int year;
     private int mount;
     private int date;
@@ -33,6 +34,15 @@ public class MyTime implements Comparable<MyTime> {
 
     public MyTime setMinutes(int minutes) {
         this.minutes = minutes;
+        return this;
+    }
+
+    public int getSecond() {
+        return second;
+    }
+
+    public MyTime setSecond(int second) {
+        this.second = second;
         return this;
     }
 
@@ -78,6 +88,7 @@ public class MyTime implements Comparable<MyTime> {
         msg_cal.set(Calendar.DATE,this.date);
         msg_cal.set(Calendar.HOUR,this.hour);
         msg_cal.set(Calendar.MINUTE,this.minutes);
+        msg_cal.set(Calendar.SECOND,this.second);
         return msg_cal;
     }
     public MyTime update_my_time_by_calender(Calendar msg_cal){
@@ -86,6 +97,7 @@ public class MyTime implements Comparable<MyTime> {
         this.date = msg_cal.get(Calendar.DATE);
         this.hour = msg_cal.get(Calendar.HOUR);
         this.minutes = msg_cal.get(Calendar.MINUTE);
+        this.second = msg_cal.get(Calendar.SECOND);
         return this;
     }
 }

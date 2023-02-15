@@ -5,6 +5,7 @@ import android.icu.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+
 public class Message {
     private String sender="";
     private String receiver="";
@@ -82,4 +83,7 @@ public class Message {
     public String get_hour_minutes_str(){
          return new SimpleDateFormat("HH:mm", Locale.ROOT).format(get_msg_calender().getTimeInMillis());
     }
+
+
+
 }

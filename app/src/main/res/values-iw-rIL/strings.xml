@@ -11,4 +11,5 @@
     <string name="typing_TAG">מקליד\\ה...</string>
     <string name="MSG_TAG">הודעה</string>
     <string name="searching_TAG">חיפוש...</string>
+    <string name="connected_TAG">מחובר/ת</string>
 </resources>

@@ -50,7 +50,7 @@
                 android:layout_gravity="start|bottom"
                 android:fontFamily="@font/helvetica_bold"
                 android:gravity="start|bottom"
-                android:text="Ron Shmaya"
+                android:text=""
                 android:textAlignment="viewStart"
                 android:textColor="#ffffff"
                 android:textSize="15dp" />
@@ -62,7 +62,7 @@
                     android:layout_height="20dp"
                     android:layout_gravity="start|top"
                     android:fontFamily="@font/helvetica"
-                    android:text="Hi how are you?"
+                    android:text=""
                     android:textAlignment="viewStart"
                     android:textColor="#ffffff"
                     android:textSize="13dp" />
@@ -91,6 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:stackFromEnd="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
