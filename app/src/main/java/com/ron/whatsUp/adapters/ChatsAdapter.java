@@ -51,6 +51,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_chats, parent, false);
         ChatsHolder chatHolder = new ChatsHolder(view);
+
         return chatHolder;
     }
 
@@ -90,9 +91,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.listChats_LBL_not_read.setText("" + unread);
         }
 
-        if(!chat.getOther_user().getImg().isEmpty()){
-            Glide.with(activity).load(chat.getOther_user().getImg()).placeholder(R.drawable.ic_user).into(holder.listChats_IMG_photo);
-        }
+        Glide.with(activity).load(chat.getOther_user().getImg()).placeholder(R.drawable.ic_user).into(holder.listChats_IMG_photo);
+
 
     }
 
