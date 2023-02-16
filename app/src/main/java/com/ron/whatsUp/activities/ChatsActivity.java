@@ -256,6 +256,9 @@ public class ChatsActivity extends AppCompatActivity {
             my_contacts = MyServices.getInstance().get_all_contacts(ChatsActivity.this);
             DataManager.getDataManager().setMy_contacts(my_contacts);
         }
+        else{
+            my_contacts = tmp;
+        }
         my_chats_list.addAll(chats.values());
         my_chats_list.sort(chat_comparator);
         chatsAdapter = new ChatsAdapter(ChatsActivity.this, my_chats_list,my_contacts);
