@@ -15,6 +15,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.ron.whatsUp.callbacks.CallBack_get_all_chats;
 import com.ron.whatsUp.callbacks.Callback_creating_account;
+import com.ron.whatsUp.callbacks.Callback_db_for_service;
 import com.ron.whatsUp.callbacks.Callback_find_account;
 import com.ron.whatsUp.callbacks.Callback_message;
 import com.ron.whatsUp.callbacks.Callback_update_account;
@@ -49,6 +50,7 @@ public class MyDB {
     private CallBack_get_all_chats callBack_get_all_chats;
     private Callback_message callback_save_message;
     private Callback_user_status callback_user_status;
+    private Callback_db_for_service callback_db_for_service;
 
     private MyDB() {
         database = FirebaseDatabase.getInstance("https://keepie-cb5ec-default-rtdb.europe-west1.firebasedatabase.app");
@@ -93,6 +95,11 @@ public class MyDB {
 
     public MyDB setCallback_user_status(Callback_user_status callback_user_status) {
         this.callback_user_status = callback_user_status;
+        return this;
+    }
+
+    public MyDB setCallback_db_for_service(Callback_db_for_service callback_db_for_service) {
+        this.callback_db_for_service = callback_db_for_service;
         return this;
     }
 
@@ -168,14 +175,9 @@ public class MyDB {
 //    }
 
     public void remove_event(MyUser myUser, HashMap<String, Chat> chats) {
-//        chats.forEach(
-//                (id, chat) -> {
         DatabaseReference databaseReference = refAccounts.child(myUser.getPhone()).child("chats");
         databaseReference.removeEventListener(valueEventListener);
-//                }
-//        );
         is_chat_listener_set = false;
-
     }
 
     ValueEventListener valueEventListener = new ValueEventListener() {
@@ -378,4 +380,49 @@ public class MyDB {
             });
         }
     }
+    public void find_account_for_service(String phoneID) {
+        if (this.callback_db_for_service != null) {
+            refAccounts.child(phoneID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    MyUser myUser = null;
+                    myUser = dataSnapshot.getValue(MyUser.class);
+                    callback_db_for_service.account_found(myUser);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+
+                }
+            });
+        }
+    }
+    public void service_from_db_start_listen_chats_changes(String phone, HashMap<String, ChatDB> chats) {
+        DatabaseReference databaseReference = refAccounts.child(phone).child("chats");
+        databaseReference.addValueEventListener(service_listen_db);
+    }
+
+
+    public void service_from_db_remove_event(String phone, HashMap<String, Chat> chats) {
+        DatabaseReference databaseReference = refAccounts.child(phone).child("chats");
+        databaseReference.removeEventListener(service_listen_db);
+    }
+
+    ValueEventListener service_listen_db = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if (callback_db_for_service != null) {
+                GenericTypeIndicator<HashMap<String, ChatDB>> dataType = new GenericTypeIndicator<HashMap<String, ChatDB>>() {
+                };
+                HashMap<String, ChatDB> chatDBHashMap = dataSnapshot.getValue(dataType);
+                if (chatDBHashMap == null)
+                    chatDBHashMap = new HashMap<>();
+                callback_db_for_service.listen_chats(chatDBHashMap);
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+        }
+    };
 }

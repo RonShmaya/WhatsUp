@@ -5,7 +5,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,6 +33,7 @@ import com.ron.whatsUp.tools.MyServices;
 import com.ron.whatsUp.tools.Permissions;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class ChatsActivity extends AppCompatActivity {
@@ -44,12 +47,12 @@ public class ChatsActivity extends AppCompatActivity {
     private boolean is_listen;
     private boolean is_need_to_stop = true;
 
-//TODO: sort chats
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         myUser = DataManager.getDataManager().get_account();
         MyServices.getInstance().update_app_lang(myUser.getLang(), this);
         super.onCreate(savedInstanceState);
+        MyServices.getInstance().setService_app_compact(this);
         setContentView(R.layout.activity_chats);
         DataManager.getDataManager().setMain_activity(this);
         init_tool_bar();
@@ -61,7 +64,14 @@ public class ChatsActivity extends AppCompatActivity {
             Permissions.getPermissions().requestCAMERA();
             return;
         }
+        Intent intent = new Intent(this, WhatsAppService.class);
+        intent.setAction(WhatsAppService.START_FOREGROUND_SERVICE);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
        // MyDB.getInstance().setCallBack_get_all_chats(callBack_get_all_chats);
        // MyDB.getInstance().getAllChats(myUser);
         MyDB.getInstance().setCallback_user_data_changed(callback_user_data_changed);
@@ -103,6 +113,14 @@ public class ChatsActivity extends AppCompatActivity {
     private void logout() {
         UserStatus userStatus = new UserStatus().setConnected(false).setImg(myUser.getImg_uri()).setLast_seen(new MyTime().update_my_time_by_calender(Calendar.getInstance())).setPhone(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
         MyDB.getInstance().update_user_status(userStatus);
+        Intent intent = new Intent(this, WhatsAppService.class);
+        intent.setAction(WhatsAppService.STOP_FOREGROUND_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
         FirebaseAuth.getInstance().signOut();
         MyDB.getInstance().clear_callbacks();
         MyDB.getInstance().remove_event(myUser, chats);
@@ -132,6 +150,7 @@ public class ChatsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         MyDB.getInstance().remove_event(myUser, chats);
+        MyDB.getInstance().setCallback_user_data_changed(null);
     }
 
     private <T extends AppCompatActivity> void go_next(Class<T> nextActivity) {
@@ -187,8 +206,16 @@ public class ChatsActivity extends AppCompatActivity {
     private Callback_permissions callback_permissions = new Callback_permissions() {
         @Override
         public void all_per_ok() {
-            MyDB.getInstance().setCallBack_get_all_chats(callBack_get_all_chats);
-            MyDB.getInstance().getAllChats(myUser);
+            Intent intent = new Intent(ChatsActivity.this, WhatsAppService.class);
+            intent.setAction(WhatsAppService.START_FOREGROUND_SERVICE);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            } else {
+                startService(intent);
+            }
+            MyDB.getInstance().setCallback_user_data_changed(callback_user_data_changed);
+            MyDB.getInstance().start_listen_chats_changes(myUser, null);
 
         }
     };
@@ -230,6 +257,7 @@ public class ChatsActivity extends AppCompatActivity {
             DataManager.getDataManager().setMy_contacts(my_contacts);
         }
         my_chats_list.addAll(chats.values());
+        my_chats_list.sort(chat_comparator);
         chatsAdapter = new ChatsAdapter(ChatsActivity.this, my_chats_list,my_contacts);
         chatsAdapter.setChatListener(chatListener);
         chats_LST.setAdapter(chatsAdapter);
@@ -244,11 +272,20 @@ public class ChatsActivity extends AppCompatActivity {
         HashMap<String, String> tmp = DataManager.getDataManager().get_my_users();
         my_chats_list.clear();
         my_chats_list.addAll(chats.values());
+        my_chats_list.sort(chat_comparator);
         DataManager.getDataManager().set_all_chats(chats);
         runOnUiThread(() -> chatsAdapter.notifyDataSetChanged());
         if(DataManager.getDataManager().getCallback_chats_to_messages() != null){
             DataManager.getDataManager().getCallback_chats_to_messages().chat_may_updated(chats.get(DataManager.getDataManager().getCurrent_chat().getChat_id()));
         }
     }
-
+    private Comparator<Chat> chat_comparator = new Comparator<Chat>() {
+        @Override
+        public int compare(Chat ch, Chat t1) {
+            if (ch.getLast_msg().get_msg_calender().after(t1.getLast_msg().get_msg_calender())) {
+                return -1;
+            }
+            return 1;
+        }
+    };
 }

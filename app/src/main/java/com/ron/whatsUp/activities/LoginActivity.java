@@ -36,8 +36,6 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout login_TIL_lan;
     private AutoCompleteTextView login_ACTV_lan;
 
-    // TODO: 15/02/2023 manifest page orizontal
-    // TODO: 15/02/2023 verify if it exists DB number!
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -25,10 +25,16 @@ public class MyServices {
     byte[] keyBytes = {0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, (byte) 0x80, (byte) 0x90, (byte) 0xa0, (byte) 0xb0, (byte) 0xc0, (byte) 0xd0, (byte) 0xe0, (byte) 0xf0, 0x00};
     SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "AES");
     private HashMap<String, String> my_contacts = new HashMap<>();
+    private HashMap<String, String> service_to_db_my_contacts = new HashMap<>();
+    private AppCompatActivity service_app_compact = null;
 
     private MyServices(Context context) {
         this.context = context.getApplicationContext();
 
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public static void initHelper(Context context) {
@@ -36,7 +42,14 @@ public class MyServices {
             _instance = new MyServices(context);
         }
     }
+    public AppCompatActivity getService_app_compact() {
+        return service_app_compact;
+    }
 
+    public MyServices setService_app_compact(AppCompatActivity service_app_compact) {
+        this.service_app_compact = service_app_compact;
+        return this;
+    }
     public static MyServices getInstance(){
         return _instance;
     }
@@ -115,5 +128,30 @@ public class MyServices {
 
         }
         return msg;
+    }
+    public HashMap<String, String> service_for_db_get_all_contacts(){
+        if(!this.my_contacts.isEmpty())
+            return this.my_contacts;
+        if(!this.service_to_db_my_contacts.isEmpty())
+            return this.service_to_db_my_contacts;
+        Cursor phones = this.context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        while (phones.moveToNext()) {
+            String phone = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            String name = phones.getString(phones.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            if (phone.contains("+972")) {
+                phone = phone.replaceAll("[^\\d]", "");
+                phone = "+" + phone;
+                if (phone.length() == PHONE_LEN)
+                    this.service_to_db_my_contacts.put(phone, name);
+            } else if (phone.startsWith("05")) {
+                phone = phone.replaceAll("[^\\d]", "");
+                phone = phone.replaceFirst("0", "+972");
+                if (phone.length() == PHONE_LEN)
+                    this.service_to_db_my_contacts.put(phone, name);
+            }
+
+        }
+        phones.close();
+        return this.service_to_db_my_contacts;
     }
 }

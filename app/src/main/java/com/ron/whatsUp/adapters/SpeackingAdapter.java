@@ -37,6 +37,7 @@ public class SpeackingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_speaking, parent, false);
         MessagesHolder messagesHolder = new MessagesHolder(view);
+        messagesHolder.setIsRecyclable(false);
         return messagesHolder;
     }
 
@@ -66,7 +67,6 @@ public class SpeackingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
         holder.listSpeaking_IC_vi1.setImageResource(res);
         holder.listSpeaking_IC_vi2.setImageResource(res);
-
     }
 
     @Override
@@ -86,6 +86,7 @@ public class SpeackingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private MaterialTextView listSpeaking_LBL_calender;
         private ImageView listSpeaking_IC_vi1;
         private ImageView listSpeaking_IC_vi2;
+
 
         public MessagesHolder(View itemView) {
             super(itemView);
